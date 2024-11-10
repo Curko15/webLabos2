@@ -1,7 +1,7 @@
 const express = require("express");
 const session = require("express-session");
 const bodyParser = require("body-parser");
-const persons = require("./data"); // Dummy podaci o osobama
+const persons = require("./data");
 const { Sequelize } = require("sequelize");
 const bcrypt = require("bcrypt");
 const app = express();
@@ -20,6 +20,11 @@ app.use(
     })
 );
 
+app.use( (req, res, next) => {
+    let Cookie = "tajni Cookie";
+    res.cookie('appSessionJS', Cookie, { httpOnly: false });
+    next();
+});
 
 const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASSWORD, {
     host: process.env.DB_HOST,
@@ -36,7 +41,7 @@ const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, proces
 
 const User = require("./models/user")(sequelize);
 
-// Funkcija za inicijalizaciju baze
+
 async function initializeDatabase() {
     await sequelize.sync({ force: true });
 
@@ -95,20 +100,16 @@ app.get("/", (req, res) => {
 app.get("/persons/:identifier", (req, res) => {
     const identifier = req.params.identifier;
 
-    // Proveri da li je zaštita od Broken Access Control omogućena
     const useUUID = req.session.bacProtection;
 
-    // Pronađi osobu na osnovu UUID-a ili ordinalnog broja (indeksa u nizu)
     const person = useUUID
-        ? persons.find(p => p.id === identifier)  // Traži po UUID-u
-        : persons[parseInt(identifier, 10)]; // Traži po indeksu u nizu
+        ? persons.find(p => p.id === identifier)
+        : persons[parseInt(identifier, 10)];
 
-    // Proveri da li je osoba pronađena
     if (!person) {
       return  res.render("not-found", {query: null});
     }
 
-    // Prosleđujemo podatke o osobi i stanje zaštite
    return res.render("person", {
         query: identifier,
         person,
@@ -122,17 +123,14 @@ app.get("/persons", (req, res) => {
     req.session.xssProtection = req.query.xssProtection === "on";
     req.session.bacProtection = req.query.bacProtection === "on";
 
-    // Pronađi osobu po imenu i prezimenu
     let query = req.query.query || "";
     if (req.session.xssProtection) {
         query = sanitizeInput(query);
     }
 
-    // Pronađi osobu prema imenu i prezimenu (case-insensitive)
     const personIndex = persons.findIndex(p => p.name.toLowerCase() === query.toLowerCase());
     const person = persons[personIndex];
 
-    // Ako je pronađena osoba, preusmeravamo korisnika na odgovarajući URL
     if (person) {
         const identifier = req.session.bacProtection ? person.id : personIndex;
       return  res.redirect(`/persons/${identifier}`);
