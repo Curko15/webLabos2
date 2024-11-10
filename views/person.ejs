@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+    <meta charset="UTF-8">
+    <title>Podaci o osobi</title>
+    <link rel="stylesheet" href="/css/person.css">
+</head>
+<body>
+
+<div class="container">
+    <% if (!person) { %>
+         <div class="not-found">
+            <h1>Rezultati pretrage za: <%- query %></h1>
+            <p>Nažalost, osoba koju tražite nije pronađena u sistemu.</p>
+            <button onclick="window.location.href='/'">Natrag na početnu stranicu</button>
+        </div>
+    <% } else { %>
+        <h1>Podaci o osobi: <%= person.name %></h1>
+        <div>
+            <h3>Osnovne informacije</h3>
+            <p>Email: <%= person.email %></p>
+        </div>
+
+        <% if (bacProtection && session.role === "admin") { %>
+            <div class="admin-info">
+                <h3>Admin informacije</h3>
+                <p>IBAN: <%= person.iban %></p>
+                <p>Tajni podatak: <%= person.secret %></p>
+            </div>
+        <% } else if (!bacProtection) { %>
+            <div class="admin-info">
+                <h3>Admin informacije</h3>
+                <p>IBAN: <%= person.iban %></p>
+                <p>Tajni podatak: <%= person.secret %></p>
+            </div>
+        <% } %>
+
+        <button onclick="window.location.href='/'">Natrag</button>
+    <% } %>
+</div>
+
+</body>
+</html>
+
+
+
+
+

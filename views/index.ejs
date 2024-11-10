@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+    <meta charset="UTF-8">
+    <title>Sigurnosna Demonstracija</title>
+    <link rel="stylesheet" href="/css/index.css">
+</head>
+<body>
+<div class="form-container">
+    <h1>Pretraži osobu</h1>
+
+
+    <form action="/persons" method="GET">
+        <input type="text" name="query" placeholder="Unesite ime i prezime za pretragu" required>
+        <button type="submit">Pretraži osobu</button>
+
+
+        <div class="checkbox-container">
+            <input type="checkbox" name="xssProtection" value="on" <% if (xssProtection) { %>checked<% } %> />
+            <label for="xssProtection">Omogući XSS zaštitu</label>
+        </div>
+
+
+        <div class="checkbox-container">
+            <input type="checkbox" name="bacProtection" value="on" <% if (bacProtection) { %>checked<% } %> />
+            <label for="bacProtection">Omogući zaštitu od Loše kontrole pristupa</label>
+        </div>
+    </form>
+</div>
+
+<div class="instructions-container">
+    <h2>Kako koristiti aplikaciju</h2>
+    <div class="instructions-text">
+        Ova aplikacija omogućava da pretražujete osobe po imenu i prezimenu.
+
+        Pokušajte pretražiti neku od osoba Marko Maric,Ivana Ivic,Petar Petrovic.  Nakon pretrage pojavit će se stranica s detaljima o traženoj osobi.
+
+        Aplikacija nudi korištenje i zaštitu za dvije tehnike sigurnosnih napada:
+        1. Cross-site scripting (XSS)
+        2. Loša kontrola pristupa (Broken Access Control)
+
+        Cross-site scripting (XSS)
+
+        Korisnik u formu za upis imena i prezimena može upisati malicioznu skriptu npr. <code>&lt;script&gt;alert(&quot;Attack&quot;)&lt;/script&gt;</code>
+
+        i skripta će se izvršiti ako checkbox za XSS zaštitu nije označen. Označavanjem checkboxa za XSS zaštitu aplikacija će onemogućiti pokretanje malicioznih skripti.
+
+        Loša kontrola pristupa (Broken Access Control)
+
+        Bez označavanja checkboxa za zaštitu od Loše kontrole  pristupa aplikacija će koristiti reference na objekte npr. /persons/0. Iskorištavanjem te ranjivosti
+        napadač može vidjeti podatke druge osobe mijenjanjem u bliski broj npr. /persons/1. Označavanjem checkboxa aplikacija će koristiti uuid umjesto rednog broja
+        s kojim napadač ne može dobiti informacije o drugoj osobi npr. /persons/a2f849c0-6713-4d12-9c4e-d3a595a1ef3d.
+        Također bez zaštite od Loše kontrole pristupa svaki korisnik može vidjeti admin informacije o osobi, dok s označenim checkboxom admin informacije može vidjeti isključivo admin nakon prijave u aplikaciju.
+
+        Podatci za prijavu s admin profilom:
+        username: admin
+        password: adminpass
+
+    </div>
+</div>
+
+
+<div class="login-container">
+    <% if (session.username) { %>
+        <span>Prijavljen: <%= session.username %></span>
+        <form action="/logout" method="POST" style="display: inline;">
+            <button type="submit">Odjavi se</button>
+        </form>
+    <% } else { %>
+        <form id="login-form" action="/login" method="POST">
+            <input type="text" name="username" placeholder="Korisničko ime" required>
+            <input type="password" name="password" placeholder="Lozinka" required>
+            <button type="submit">Prijavi se</button>
+        </form>
+    <% } %>
+</div>
+</body>
+</html>
+
+
+
+
+

@@ -1,0 +1,16 @@
+# Node modules folder
+node_modules/
+
+# Environment variables
+.env
+
+# Log files
+*.log
+
+# Sistem fajlovi
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.swp
