@@ -26,18 +26,17 @@ app.use( (req, res, next) => {
     next();
 });
 
-const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASSWORD, {
-    host: process.env.DB_HOST,
-    port: process.env.DB_PORT,
-    dialect: process.env.DB_DIALECT,
+const sequelize = new Sequelize("welabos2_baza", "welabos2_baza_user", "phAPz35CiOUAN5I9ykgoByi0dXFMPThN", {
+    host: "dpg-csnp3nhu0jms738uf910-a.frankfurt-postgres.render.com",
+    port: 5432,
+    dialect: "postgres",
     dialectOptions: {
         ssl: {
-            require: process.env.DB_SSL_REQUIRE === "true",
-            rejectUnauthorized: process.env.DB_SSL_REJECT_UNAUTHORIZED === "false"
+            require: "true",
+            rejectUnauthorized:"false"
         }
     }
 });
-
 
 const User = require("./models/user")(sequelize);
 
