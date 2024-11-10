@@ -42,7 +42,7 @@
         Cross-site scripting (XSS)
 
         Korisnik u formu za upis imena i prezimena može upisati malicioznu skriptu npr. <code>&lt;script&gt;alert(&quot;Attack&quot;)&lt;/script&gt;</code>
-
+        <code>&lt;script&gt;alert(document.cookie)&lt;/script&gt;</code>
         i skripta će se izvršiti ako checkbox za XSS zaštitu nije označen. Označavanjem checkboxa za XSS zaštitu aplikacija će onemogućiti pokretanje malicioznih skripti.
 
         Loša kontrola pristupa (Broken Access Control)
